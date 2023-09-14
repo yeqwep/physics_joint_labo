@@ -1,6 +1,5 @@
 # Platformer template
-Template project for a platformer game.
-
+これはDefoldの物理ジョイントの実験作です。
 
 # Credits
 Graphics by [Kenney](https://kenney.nl)
