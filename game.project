@@ -1,0 +1,46 @@
+[project]
+title = Platformer joint
+dependencies#0 = https://github.com/britzl/defold-orthographic/archive/master.zip
+
+[bootstrap]
+main_collection = /game/game.collectionc
+render = /orthographic/render/orthographic.renderc
+
+[input]
+game_binding = /input/game.input_bindingc
+use_accelerometer = 0
+
+[display]
+width = 1280
+height = 720
+high_dpi = 1
+
+[ios]
+app_icon_57x57 = /assets/app_icons/icon_57.png
+app_icon_114x114 = /assets/app_icons/icon_114.png
+app_icon_72x72 = /assets/app_icons/icon_72.png
+app_icon_144x144 = /assets/app_icons/icon_144.png
+bundle_identifier = com.example.todo
+
+[osx]
+bundle_identifier = com.example.todo
+
+[android]
+input_method = HiddenInputField
+
+[script]
+shared_state = 1
+
+[physics]
+gravity_y = -1000.0
+scale = 0.2
+max_collisions = 512
+max_collision_object_count = 512
+max_contacts = 512
+
+[tilemap]
+max_tile_count = 4096
+
+[sprite]
+max_count = 1024
+

@@ -1,0 +1,6 @@
+function init(self)
+	self.life = 3
+	timer.delay(self.life, false, function()
+		go.delete()
+	end)
+end

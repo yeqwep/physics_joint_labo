@@ -1,0 +1,109 @@
+-- -------------------------------------------------------------------------------
+-- HINGE 
+local function setup_hinge(self)
+	local options = {}
+	-- HINGE free
+	options = {
+		enable_limit = false
+	}
+	physics.create_joint(physics.JOINT_TYPE_HINGE, "hinge_free_o#coll", "hinge_joint_free", vmath.vector3(0, 0, 0), "hinge_free_t#coll", vmath.vector3(0, -50, 0), options)
+	-- HINGE enable_motor
+	options = {
+		lower_angle = math.rad(-45),
+		upper_angle = math.rad(45),
+		max_motor_torque = 2000,
+		motor_speed = -100,
+		enable_limit = false,
+		enable_motor = true
+	}
+	physics.create_joint(physics.JOINT_TYPE_HINGE, "hinge_motor_o#coll", "hinge_joint2", vmath.vector3(0, 0, 0), "hinge_motor_t#coll", vmath.vector3(0, -50, 0), options)
+	-- HINGE enable_limit
+	options = {
+		lower_angle = math.rad(-90),
+		upper_angle = math.rad(90),
+		-- max_motor_torque = 20,
+		-- motor_speed = 1,
+		enable_limit = true,
+		enable_motor = false
+	}
+	physics.create_joint(physics.JOINT_TYPE_HINGE, "hinge_limit_o#coll", "hinge_joint3", vmath.vector3(0, 0, 0), "hinge_limit_t#coll", vmath.vector3(0, -50, 0), options)
+	-- HINGE destroy
+	options = { enable_limit = false }
+	physics.create_joint(physics.JOINT_TYPE_HINGE, "obj_c3#coll", "hinge_joint4", vmath.vector3(0, 0, 0), "obj_d3#coll", vmath.vector3(0, -50, 0), options)
+	physics.create_joint(physics.JOINT_TYPE_HINGE, "obj_c3-2#coll", "hinge_joint5", vmath.vector3(0, 0, 0), "obj_d3#coll", vmath.vector3(0, 50, 0), options)
+
+end
+-- -------------------------------------------------------------------------------
+-- FIXED Rope
+local function setup_fixed(self)
+	local options = {
+		max_length = 200,
+	}
+	physics.create_joint(physics.JOINT_TYPE_FIXED, "fixed_o#coll", "fixed_joint", vmath.vector3(10, 0, 0), "fixed_t#coll", vmath.vector3(0, 20, 0), options)
+end
+-- -------------------------------------------------------------------------------
+-- WELD WELD
+local function setup_weld(self)
+	local options = { frequency = 10, damping = 0.9 }
+	physics.create_joint(physics.JOINT_TYPE_WELD, "weld_o#coll", "w_joint", vmath.vector3(0, 0, 0), "weld_t#coll", vmath.vector3(90, 0, 0), options)
+end
+-- -------------------------------------------------------------------------------
+-- SPRING Distance
+local function setup_spring(self)
+	local prop = { length = 80, damping = 0.4, frequency = 1 }
+
+	physics.create_joint(physics.JOINT_TYPE_SPRING, "spring_o#coll", "spring_joint", vmath.vector3(0, 0, 0), "spring_t#coll", vmath.vector3(0, 0, 0), prop)
+end
+-- -------------------------------------------------------------------------------
+-- SLIDER Prismatic
+local function setup_slider(self)
+	local prop = {
+		local_axis_a = vmath.vector3(1, 0, 0),
+		reference_angle = 0,
+		enable_limit = true,
+		lower_translation = -300,
+		upper_translation = 500,
+		enable_motor = false,
+		max_motor_force = 0,
+		motor_speed = 0
+	}
+	physics.create_joint(physics.JOINT_TYPE_SLIDER, "slide_x_o#coll", "slider_joint_x", vmath.vector3(0, 0, 0), "slide_x_t#coll", vmath.vector3(0, 150, 0), prop)
+
+	prop = {
+		local_axis_a = vmath.vector3(0, 1, 0),
+		reference_angle = math.pi/2,
+		enable_limit = true,
+		lower_translation = -150,
+		upper_translation = 50,
+		enable_motor = true,
+		max_motor_force = -1000,
+		motor_speed = 5
+	}
+	physics.create_joint(physics.JOINT_TYPE_SLIDER, "slide_y_o#coll", "slider_joint_y", vmath.vector3(0, 0, 0), "slide_y_t#coll", vmath.vector3(50, 100, 0), prop)
+end
+-- -------------------------------------------------------------------------------
+-- common
+-- -------------------------------------------------------------------------------
+function init(self)
+	setup_hinge(self)
+	setup_fixed(self)
+	setup_weld(self)
+	setup_spring(self)
+	setup_slider(self)
+	-- msg.post("@system:", "toggle_physics_debug")
+	msg.post(".", "acquire_input_focus")
+	self.on = false
+end
+local input_jump = hash("jump")
+function on_input(self, action_id, action)
+	if action_id == input_jump then
+		if action.pressed then
+			self.on = not self.on
+			if self.on then
+				physics.destroy_joint("obj_c3-2#coll","hinge_joint5")
+			else
+				physics.create_joint(physics.JOINT_TYPE_HINGE, "obj_c3-2#coll", "hinge_joint5", vmath.vector3(0, 0, 0), "obj_d3#coll", vmath.vector3(0, 50, 0), { enable_limit = false,enable_motor = false })
+			end
+		end
+	end
+end
